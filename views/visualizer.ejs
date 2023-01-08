@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"
+      integrity="sha512-WJXVjqeINVpi5XXJ2jn0BSCfp0y80IKrYh731gLRnkAS9TKc5KNt/OfLtu+fCueqdWniouJ1ubM+VI/hbo7POQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"
+      integrity="sha512-3WFaXQUsbGieECwv3t3DvyAkZ7pp+/rIKOQnx7NKhfwIF0u2l+DYsE2eF635ewJVj3YTU4/Ug6UqEkSTZCiSew=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.js"
+      integrity="sha512-TU9AWtV5uUZPX8dbBAH8NQF1tSdigPRRT82vllAQ1Ke28puiqLA6ZVKxtUGlgrH6yWFnkKy+sE6luNEGH9ar0A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js"
+      integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DlMuxDChC7x0oXtk/ESji6a0lP/Tdg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <title>Spotify Generated Art</title>
+    <link rel="stylesheet" href="/stylesheet/style.css" />
+  </head>
+  <body>
+    <div class="user-info">
+      <div class="name">
+        <p><%- userInfo?.display_name %></p>
+      </div>
+      <!-- <h3><%- userInfo?.country %></h3> -->
+      <div class="generic">
+        <p>Generated Art</p>
+      </div>
+    </div>
+    <div class="description">
+      <p>Based on the last 20 songs you have played :)</p>
+    </div>
+    <div class="save">
+      <p>Press "S" to save your art!</p>
+    </div>
+
+    <div class="canvas-window">
+      <script>
+        var userInfo = "<%= userInfo.display_name %>";
+        var userCountry = "<%= userInfo.country %>";
+        console.log(userInfo);
+        console.log(userCountry);
+
+        var songsIDs = "<%= songsIDs %>";
+        console.log(songsIDs);
+
+        //FAZER ISTO PARA TODAS AS METRICAS
+        var danceability = "<%= trackMetrics.danceability %>";
+        var loudness = "<%= trackMetrics.loudness %>";
+        var valence = "<%= trackMetrics.valence %>";
+        var tempo = "<%= trackMetrics.tempo %>";
+        var mode = "<%= trackMetrics.mode %>";
+        var energy = "<%= trackMetrics.energy %>";
+        var speechiness = "<%= trackMetrics.speechiness %>";
+        var acousticness = "<%= trackMetrics.acousticness %>";
+        var instrumentalness = "<%= trackMetrics.instrumentalness %>";
+        var liveness = "<%= trackMetrics.liveness %>";
+
+        console.log(danceability);
+        console.log(loudness);
+        console.log(valence);
+        console.log(tempo);
+        console.log(mode);
+        console.log(energy);
+        console.log(speechiness);
+        console.log(acousticness);
+        console.log(instrumentalness);
+        console.log(liveness);
+
+        function setup() {
+          createCanvas(400, 400);
+          noFill();
+          strokeWeight(2);
+          drawBackground();
+          drawHexagons();
+        }
+
+        function draw() {
+          // Do not draw anything in the draw loop
+        }
+
+        function drawHexagons() {
+          translate(width / 2, height / 2);
+
+          // Set the stroke color based on the value of the danceability variable
+          stroke(255 * danceability, 255 * loudness, 255 * tempo);
+          drawHexagon(danceability, random(TWO_PI));
+
+          // Set the stroke color based on the value of the valence variable
+          stroke(255 * valence, 255 * mode, 255 * energy);
+          drawHexagon(valence, random(TWO_PI));
+
+          // Set the stroke color based on the value of the speechiness variable
+          stroke(255 * speechiness, 255 * acousticness, 255 * instrumentalness);
+          drawHexagon(speechiness, random(TWO_PI));
+
+          // Set the stroke color based on the value of the liveness variable
+          stroke(255 * liveness, 0, 0);
+          drawHexagon(liveness, random(TWO_PI));
+        }
+
+        function drawHexagon(radius, angle) {
+          radius = map(radius, 0, 1, 0, height / 2);
+          rotate(angle);
+          beginShape();
+          for (var a = 0; a < TWO_PI; a += TWO_PI / 6) {
+            var x = radius * cos(a);
+            var y = radius * sin(a);
+            vertex(x, y);
+          }
+          endShape(CLOSE);
+          rotate(-angle);
+        }
+        function drawBackground() {
+          // Make the gradient darker or lighter based on the value of the mode variable
+          if (mode == 1) {
+            setGradient(
+              0,
+              0,
+              width,
+              height,
+              color(25, 25, 25),
+              color(0, 0, 0),
+              "Y_AXIS"
+            ); // darker
+          } else {
+            setGradient(
+              0,
+              0,
+              width,
+              height,
+              color(225, 225, 225),
+              color(200, 200, 200),
+              "Y_AXIS"
+            ); // lighter
+          }
+        }
+
+        //set a gradient based on the mode, if 1 its darker, if 0 its lighter
+        function setGradient(x, y, w, h, c1, c2, axis) {
+          noFill();
+
+          if (axis === "Y_AXIS") {
+            // Top to bottom gradient
+            for (let i = y; i <= y + h; i++) {
+              let inter = map(i, y, y + h, 0, 1);
+              let c = lerpColor(c1, c2, inter);
+              stroke(c);
+              line(x, i, x + w, i);
+            }
+          } else if (axis === "X_AXIS") {
+            // Left to right gradient
+            for (let i = x; i <= x + w; i++) {
+              let inter = map(i, x, x + w, 0, 1);
+              let c = lerpColor(c1, c2, inter);
+              stroke(c);
+              line(i, y, i, y + h);
+            }
+          }
+        }
+        //saves the image to the computer
+        function keyPressed() {
+          if (key === "s") {
+            saveCanvas("my-image", "png");
+          }
+        }
+      </script>
+    </div>
+  </body>
+</html>
+
+<!-- This sketch draws circles for the variables danceability, loudness, valence, energy, speechiness, and acousticness, and a line for the variable tempo. The circles are sized and colored based on the values of the variables, and the background color is set based on the value of the mode variable. -->
